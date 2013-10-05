@@ -3,11 +3,13 @@ package com.moco.magnet.encounter;
 import java.util.Random;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -85,6 +87,14 @@ public class CreateActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public void createRoom(View v) {
+		if(foundNewCode) {		
+			Intent intent = new Intent(CreateActivity.this, MapActivity.class);
+			intent.putExtra("CREATEORJOIN", 1);
+			startActivity(intent);
+		}
 	}
 
 }

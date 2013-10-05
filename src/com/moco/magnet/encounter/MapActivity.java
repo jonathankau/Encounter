@@ -21,7 +21,7 @@ public class MapActivity extends FragmentActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_map);
-    MyLocationListener a = new MyLocationListener(null); 
+    MyLocationListener a = new MyLocationListener(this); 
     a.showCurrentLocation(); 
     map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
         .getMap();

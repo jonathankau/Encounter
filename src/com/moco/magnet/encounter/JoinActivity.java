@@ -1,6 +1,7 @@
 package com.moco.magnet.encounter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.NavUtils;
@@ -97,6 +98,10 @@ public class JoinActivity extends Activity {
 						hasConfirmed = true;
 
 						sessions.child(join_code).setValue(new Message(firstDeviceID, deviceID));
+						
+						Intent intent = new Intent(JoinActivity.this, MapActivity.class);
+						intent.putExtra("CREATEORJOIN", 1);
+						startActivity(intent);
 					}
 
 				}
