@@ -22,6 +22,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.moco.magnet.encounter.JoinActivity"
+            android:label="Join Room"
+            android:parentActivityName="com.moco.magnet.encounter.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.moco.magnet.encounter.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.moco.magnet.encounter.CreateActivity"
+            android:label="Create Room"
+            android:parentActivityName="com.moco.magnet.encounter.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.moco.magnet.encounter.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
