@@ -11,33 +11,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_title"
-        android:textSize="30sp" 
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/iconlogo"
         android:layout_marginBottom="30dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" 
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal" >
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Create" 
             android:layout_marginRight="20dp"
             android:layout_weight="1"
-            android:onClick="createRoom"/>
+            android:onClick="createRoom"
+            android:text="Create" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Join"
-            android:layout_weight="1" 
-            android:onClick="joinRoom"/>
+            android:layout_weight="1"
+            android:onClick="joinRoom"
+            android:text="Join" />
     </LinearLayout>
 
 </LinearLayout>
