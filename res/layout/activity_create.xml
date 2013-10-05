@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="0000"
+        android:text=""
         android:textSize="30sp" 
         android:layout_marginBottom="30dp"/>
     

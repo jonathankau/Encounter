@@ -5,9 +5,10 @@ import java.util.Random;
 import android.app.Activity;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -28,9 +29,10 @@ public class CreateActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create);
-
-
-		//Debug
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		// Set listener
 		sessions.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
@@ -71,4 +73,16 @@ public class CreateActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	    // Respond to the action bar's Up/Home button
+	    case android.R.id.home:
+	        NavUtils.navigateUpFromSameTask(this);
+	        sessions.child(new_code).removeValue();
+	        return true;
+	    }
+	    return super.onOptionsItemSelected(item);
+	}
+	
 }
