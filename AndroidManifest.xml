@@ -38,6 +38,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.moco.magnet.encounter.MainActivity" />
         </activity>
+        <meta-data
+    android:name="com.google.android.maps.v2.AIzaSyAbcpw0Wgbypx4_pl6HqPT76YQNHuZl3t4"
+    android:value="AIzaSyAbcpw0Wgbypx4_pl6HqPT76YQNHuZl3t4"/>
     </application>
 
 </manifest>
