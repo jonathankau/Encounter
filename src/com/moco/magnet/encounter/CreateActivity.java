@@ -22,16 +22,16 @@ public class CreateActivity extends Activity {
 	private Firebase sessions = new Firebase(sessionsUrl);
 	private Firebase users = new Firebase(usersUrl);
 
-	String new_code;
+	String new_code = "";
 	boolean foundNewCode = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create);
-		
+
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		// Set listener
 		sessions.addValueEventListener(new ValueEventListener() {
 			@Override
@@ -47,12 +47,12 @@ public class CreateActivity extends Activity {
 					}
 
 					foundNewCode = true;
-					
+
 					String deviceID = Secure.getString(CreateActivity.this.getContentResolver(),
 							Secure.ANDROID_ID);
 
 					sessions.child(new_code).setValue(deviceID);
-					
+
 					// Update the actual textview with the new pin
 					TextView code = (TextView) CreateActivity.this.findViewById(R.id.new_pin);
 					code.setText(new_code);
@@ -75,14 +75,16 @@ public class CreateActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    // Respond to the action bar's Up/Home button
-	    case android.R.id.home:
-	        NavUtils.navigateUpFromSameTask(this);
-	        sessions.child(new_code).removeValue();
-	        return true;
-	    }
-	    return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		// Respond to the action bar's Up/Home button
+		case android.R.id.home:
+			if(sessions != null && sessions.child(new_code) != null) {
+				sessions.child(new_code).removeValue();
+			}
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
-	
+
 }

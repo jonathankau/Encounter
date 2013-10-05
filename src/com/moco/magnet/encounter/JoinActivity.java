@@ -22,9 +22,9 @@ public class JoinActivity extends Activity {
 	private Firebase sessions = new Firebase(sessionsUrl);
 	private Firebase users = new Firebase(usersUrl);
 	
-	String join_code;
-	String firstDeviceID;
-	String deviceID;
+	String join_code = "";
+	String firstDeviceID = "";
+	String deviceID = "";
 
 	/******************************************************************/
 	private static class Message {
