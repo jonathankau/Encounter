@@ -41,11 +41,11 @@ public class CreateActivity extends Activity {
 			public void onDataChange(DataSnapshot snapshot) {
 				if(foundNewCode == false) {
 					Random r = new Random();
-					randNum = r.nextInt(1001);
+					randNum = r.nextInt(10000);
 					new_code = String.format("%04d", randNum);
 
 					while(snapshot.child(new_code).getValue() != null) {
-						randNum = r.nextInt(1001);
+						randNum = r.nextInt(10000);
 						new_code = String.format("%04d", randNum);
 					}
 

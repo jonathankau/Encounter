@@ -85,23 +85,10 @@ public class MyLocationListener implements LocationListener {
 
 		  public void onLocationChanged(Location location) 
 		  {
-		    /*  String message = String.format(
-		              "New Location \n Longitude: %1$s \n Latitude: %2$s",
-		              location.getLongitude(), location.getLatitude()
-		      );
-		      t1.setText(message);
-		    Toast.makeText(WinUirep.this,
-		              "Location Changed !",
-		              Toast.LENGTH_LONG).show();*/
-			  
-
-			  
 			  Coordinates update = new Coordinates(location.getLatitude(), location.getLongitude());
 			  users.child(deviceID).setValue(update);
 			  
-			  dataPasser.notifyChange();	  
-			  
-			  
+			  dataPasser.notifyChange();	   
 
 		  }
 

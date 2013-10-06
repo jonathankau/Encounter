@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,4 +10,38 @@
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment" />
 
-</RelativeLayout> 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="13dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/messaging_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/message_button" 
+            android:onClick="messagingAction"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|bottom"
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="horizontal" 
+        android:layout_marginBottom="11dp">
+"
+
+        <Button
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="70dp"
+            android:paddingRight="70dp"
+            android:text="Done!" />
+    </LinearLayout>
+
+</FrameLayout>

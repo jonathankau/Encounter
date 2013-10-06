@@ -5,7 +5,7 @@ import java.util.HashMap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
-import android.widget.Toast;
+import android.view.View;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -18,8 +18,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.moco.magnet.encounter.JoinActivity.Message;
-import com.moco.magnet.encounter.MyLocationListener.Coordinates;
 import com.moco.magnet.encounter.MyLocationListener.NotifyInterface;
 
 public class MapActivity extends FragmentActivity implements NotifyInterface {
@@ -41,7 +39,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	MyLocationListener a; 
 	Marker location;
 	Marker otherPerson = null;
-	
+
 	boolean foundOtherID = false;
 
 	@Override
@@ -75,7 +73,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 					} else {
 						otherID = deviceIDs.get("deviceID1");
 					}
-					
+
 					foundOtherID = true;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -102,16 +100,15 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 							BitmapDescriptorFactory.HUE_AZURE);
 
 					HashMap<String, String> coord = ((HashMap) snapshot.child(otherID).getValue());
-					
+
 					LatLng otherLocation = new LatLng(Double.parseDouble(coord.get("latitude")), Double.parseDouble(coord.get("longitude")));
 
 					if(otherPerson == null) {
 						otherPerson = map.addMarker(new MarkerOptions()
 						.position(otherLocation)
 						.icon(bitmapDescriptor)
-						.title("Other Person"));
-						
-						Toast.makeText(MapActivity.this, "Blue marker placed!", Toast.LENGTH_SHORT).show();
+						.title("Other Person"));				
+
 					} else {
 						otherPerson.setPosition(otherLocation);
 					}
@@ -128,10 +125,10 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 
 		// Move the camera instantly to currLocation with a zoom of 15.
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 100));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 75));
 
 		// Zoom in, animating the camera.
-		map.animateCamera(CameraUpdateFactory.zoomTo(100), 4000, null);
+		map.animateCamera(CameraUpdateFactory.zoomTo(75), 4000, null);
 	}
 
 	@Override
@@ -140,11 +137,13 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		setContentView(R.layout.activity_map);
 
 
-		
-		deviceID = getIntent().getStringExtra("DEVICEID");
-		  
+
+		deviceID = getIntent().getStringExtra("DEVICEID");		  
 		roomNum = getIntent().getStringExtra("ROOMSTRING");
 		createOrJoin = getIntent().getIntExtra("CREATEORJOIN", 0);
+
+		setTitle("Room " + roomNum);
+
 		a = new MyLocationListener(this, this, deviceID);
 
 
@@ -170,8 +169,10 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 		LatLng currLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude()); 
 		location.setPosition(currLocation);
+	}
 
-
+	public void messagingAction(View v) {
+		// Send intent to messaging Activity here?
 	}
 
 } 
