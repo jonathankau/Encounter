@@ -25,6 +25,7 @@ public class CreateActivity extends Activity {
 	private Firebase users = new Firebase(usersUrl);
 
 	String new_code = "";
+	String deviceID = "";
 	boolean foundNewCode = false;
 
 	@Override
@@ -50,7 +51,7 @@ public class CreateActivity extends Activity {
 
 					foundNewCode = true;
 
-					String deviceID = Secure.getString(CreateActivity.this.getContentResolver(),
+					deviceID = Secure.getString(CreateActivity.this.getContentResolver(),
 							Secure.ANDROID_ID);
 
 					sessions.child(new_code).setValue(deviceID);
@@ -92,7 +93,9 @@ public class CreateActivity extends Activity {
 	public void createRoom(View v) {
 		if(foundNewCode) {		
 			Intent intent = new Intent(CreateActivity.this, MapActivity.class);
-			intent.putExtra("CREATEORJOIN", 1);
+			intent.putExtra("CREATEORJOIN", 0);
+			intent.putExtra("ROOMSTRING", new_code);
+			intent.putExtra("DEVICEID", deviceID);
 			startActivity(intent);
 		}
 	}

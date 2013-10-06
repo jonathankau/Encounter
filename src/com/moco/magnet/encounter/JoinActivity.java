@@ -28,7 +28,7 @@ public class JoinActivity extends Activity {
 	String deviceID = "";
 
 	/******************************************************************/
-	private static class Message {
+	public static class Message {
 
 		private String device_id1;
 		private String device_id2;
@@ -87,7 +87,7 @@ public class JoinActivity extends Activity {
 					join_code = ((EditText) JoinActivity.this.findViewById(R.id.join_pin)).getText().toString();
 
 					if(snapshot.child(join_code).getValue() == null) { // If room does not exist					
-						((EditText) JoinActivity.this.findViewById(R.id.invalid_pin)).setVisibility(View.VISIBLE);
+						((TextView) JoinActivity.this.findViewById(R.id.invalid_pin)).setVisibility(View.VISIBLE);
 
 					} else {
 						deviceID = Secure.getString(JoinActivity.this.getContentResolver(),
@@ -101,6 +101,8 @@ public class JoinActivity extends Activity {
 						
 						Intent intent = new Intent(JoinActivity.this, MapActivity.class);
 						intent.putExtra("CREATEORJOIN", 1);
+						intent.putExtra("ROOMSTRING", join_code);
+						intent.putExtra("DEVICEID", deviceID);
 						startActivity(intent);
 					}
 
