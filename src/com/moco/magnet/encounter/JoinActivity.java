@@ -54,6 +54,7 @@ public class JoinActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_join);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override

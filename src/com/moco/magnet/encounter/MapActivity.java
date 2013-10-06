@@ -1,13 +1,18 @@
 package com.moco.magnet.encounter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.w3c.dom.Document;
+
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -20,6 +25,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.moco.magnet.encounter.MyLocationListener.NotifyInterface;
 
 public class MapActivity extends FragmentActivity implements NotifyInterface {
@@ -114,6 +121,28 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 					} else {
 						otherPerson.setPosition(otherLocation);
 					}
+
+					// If other person's marker is available, draw path!
+					LatLng sourceLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude()); 
+
+					GMapV2Direction md = new GMapV2Direction();
+					GoogleMap mMap = ((SupportMapFragment) getSupportFragmentManager()
+							.findFragmentById(R.id.map)).getMap();
+					final Document doc = md.getDocument(sourceLocation, otherLocation,
+							GMapV2Direction.MODE_WALKING);
+
+					if(doc != null) {
+
+						ArrayList<LatLng> directionPoint = md.getDirection(doc);
+						PolylineOptions rectLine = new PolylineOptions().width(3).color(
+								Color.RED);
+
+						for (int i = 0; i < directionPoint.size(); i++) {
+							rectLine.add(directionPoint.get(i));
+						}
+						Polyline polylin = mMap.addPolyline(rectLine);
+
+					}
 				}
 			}
 
@@ -127,16 +156,17 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 
 		// Move the camera instantly to currLocation with a zoom of 15.
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 75));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 15));
 
 		// Zoom in, animating the camera.
-		map.animateCamera(CameraUpdateFactory.zoomTo(75), 4000, null);
+		map.animateCamera(CameraUpdateFactory.zoomTo(15), 4000, null);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -176,7 +206,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	public void doneAction(View v) {
 		NavUtils.navigateUpFromSameTask(this);
 	}
-	
+
 	public void createChat(View v) {
 		Intent intent = new Intent(v.getContext(), SplashActivity.class);
 		startActivity(intent);
