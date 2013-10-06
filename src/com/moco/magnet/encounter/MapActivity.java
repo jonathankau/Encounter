@@ -103,6 +103,8 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
 				if(foundOtherID == true && snapshot.child(otherID) != null) {
+					setTitle("Room " + roomNum + ": 2 people");
+					
 					// Show other person's marker
 					BitmapDescriptor bitmapDescriptor 
 					= BitmapDescriptorFactory.defaultMarker(
@@ -174,7 +176,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		roomNum = getIntent().getStringExtra("ROOMSTRING");
 		createOrJoin = getIntent().getIntExtra("CREATEORJOIN", 0);
 
-		setTitle("Room " + roomNum);
+		setTitle("Room " + roomNum + ": 1 people");
 
 		a = new MyLocationListener(this, this, deviceID);
 
