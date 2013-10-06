@@ -23,7 +23,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/message_button" 
-            android:onClick="messagingAction"/>
+            android:onClick="createChat"/>
     </LinearLayout>
 
     <LinearLayout
@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:paddingLeft="70dp"
             android:paddingRight="70dp"
-            android:text="Done!" />
+            android:text="Done!" 
+            android:onClick="doneAction"/>
     </LinearLayout>
 
 </FrameLayout>

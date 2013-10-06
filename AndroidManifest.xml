@@ -63,6 +63,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.moco.magnet.encounter.MainActivity" />
         </activity>
+        <activity
+            android:name="com.moco.magnet.encounter.ChatActivity"
+            android:label="Map"
+            android:parentActivityName="com.moco.magnet.encounter.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.moco.magnet.encounter.MainActivity" />
+        </activity>
         <meta-data
     android:name="com.google.android.maps.v2.API_KEY"
     android:value="AIzaSyAbcpw0Wgbypx4_pl6HqPT76YQNHuZl3t4"/>

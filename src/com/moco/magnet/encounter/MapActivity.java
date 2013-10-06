@@ -2,8 +2,10 @@ package com.moco.magnet.encounter;
 
 import java.util.HashMap;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.View;
 
@@ -171,8 +173,13 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		location.setPosition(currLocation);
 	}
 
-	public void messagingAction(View v) {
-		// Send intent to messaging Activity here?
+	public void doneAction(View v) {
+		NavUtils.navigateUpFromSameTask(this);
+	}
+	
+	public void createChat(View v) {
+		Intent intent = new Intent(v.getContext(), SplashActivity.class);
+		startActivity(intent);
 	}
 
 } 
