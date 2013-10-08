@@ -7,12 +7,12 @@ import org.w3c.dom.Document;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -33,6 +33,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	static final LatLng HAMBURG = new LatLng(53.558, 9.927);
 	static final LatLng KIEL = new LatLng(53.551, 9.993);
 	private GoogleMap map;
+	GoogleMap mMap;
 	MyLocationListener.Coordinates other_coord = new MyLocationListener.Coordinates();
 	String deviceID = "";
 	String otherID = "";
@@ -50,6 +51,10 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	Marker otherPerson = null;
 
 	boolean foundOtherID = false;
+
+	GMapV2Direction md;
+	
+	Polyline last;
 
 	@Override
 	public void onPause() {
@@ -104,7 +109,8 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 			public void onDataChange(DataSnapshot snapshot) {
 				if(foundOtherID == true && snapshot.child(otherID) != null) {
 					setTitle("Room " + roomNum + ": 2 people");
-					
+
+
 					// Show other person's marker
 					BitmapDescriptor bitmapDescriptor 
 					= BitmapDescriptorFactory.defaultMarker(
@@ -126,25 +132,21 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 					// If other person's marker is available, draw path!
 					LatLng sourceLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude()); 
+					LatLng oppLocation = new LatLng(Double.parseDouble(coord.get("latitude")), Double.parseDouble(coord.get("longitude")));
 
-					GMapV2Direction md = new GMapV2Direction();
-					GoogleMap mMap = ((SupportMapFragment) getSupportFragmentManager()
+					md = new GMapV2Direction();
+
+
+					mMap = ((SupportMapFragment) getSupportFragmentManager()
 							.findFragmentById(R.id.map)).getMap();
-					final Document doc = md.getDocument(sourceLocation, otherLocation,
-							GMapV2Direction.MODE_WALKING);
-
-					if(doc != null) {
-
-						ArrayList<LatLng> directionPoint = md.getDirection(doc);
-						PolylineOptions rectLine = new PolylineOptions().width(3).color(
-								Color.RED);
-
-						for (int i = 0; i < directionPoint.size(); i++) {
-							rectLine.add(directionPoint.get(i));
-						}
-						Polyline polylin = mMap.addPolyline(rectLine);
-
+					
+					if(last != null) {
+						last.remove();
 					}
+					
+					new accessDirectionsTask().execute(sourceLocation, oppLocation);
+
+
 				}
 			}
 
@@ -212,6 +214,31 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	public void createChat(View v) {
 		Intent intent = new Intent(v.getContext(), SplashActivity.class);
 		startActivity(intent);
+	}
+
+	private class accessDirectionsTask extends AsyncTask<LatLng, Void, Document> {
+
+		@Override
+		protected Document doInBackground(LatLng... arg0) {
+			GMapV2Direction direct = new GMapV2Direction();
+			return direct.getDocument(arg0[0], arg0[1],
+					GMapV2Direction.MODE_WALKING);
+		}
+
+		@Override
+		protected void onPostExecute(Document doc) {
+			if(doc != null) {
+		
+				ArrayList<LatLng> directionPoint = md.getDirection(doc);
+				PolylineOptions rectLine = new PolylineOptions().width(5).color(
+						Color.RED);
+
+				for (int i = 0; i < directionPoint.size(); i++) {
+					rectLine.add(directionPoint.get(i));
+				}
+				last = mMap.addPolyline(rectLine);
+			}
+		}
 	}
 
 } 

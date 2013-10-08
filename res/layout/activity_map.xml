@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="70dp"
             android:paddingRight="70dp"
-            android:text="Done!" 
+            android:text="Found!" 
             android:onClick="doneAction"/>
     </LinearLayout>
 
