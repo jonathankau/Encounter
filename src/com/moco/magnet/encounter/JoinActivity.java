@@ -1,7 +1,10 @@
 package com.moco.magnet.encounter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.support.v4.app.NavUtils;
@@ -76,8 +79,20 @@ public class JoinActivity extends Activity {
 	    }
 	    return super.onOptionsItemSelected(item);
 	}
+	
+	private boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+	}
 
 	public void joinRoom(View v) {
+		if(!isNetworkAvailable()) {
+			Toast.makeText(this, "Network connection is not available.", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
 		// Set listener
 		sessions.addValueEventListener(new ValueEventListener() {
 			boolean hasConfirmed = false;

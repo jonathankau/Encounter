@@ -7,22 +7,27 @@ import org.w3c.dom.Document;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -53,7 +58,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	boolean foundOtherID = false;
 
 	GMapV2Direction md;
-	
+
 	Polyline last;
 
 	@Override
@@ -71,9 +76,16 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		a.showCurrentLocation(); 
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
 				.getMap();
-
 		LatLng currLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude()); 
 		location.setPosition(currLocation);
+
+		// Move the camera instantly to currLocation with a zoom of 15.
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 15));
+
+		// Zoom in, animating the camera.
+		map.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+
 
 		// Set session listener to get other device id
 		sessions.addValueEventListener(new ValueEventListener() {
@@ -124,7 +136,23 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 						otherPerson = map.addMarker(new MarkerOptions()
 						.position(otherLocation)
 						.icon(bitmapDescriptor)
-						.title("Other Person"));				
+						.title("Other Person"));
+
+						// Zoom camera to include both markers
+						LatLngBounds.Builder builder = new LatLngBounds.Builder();
+						builder.include(otherPerson.getPosition());
+						builder.include(location.getPosition());
+						LatLngBounds bounds = builder.build();
+
+						int padding = 50; // offset from edges of the map in pixels
+						
+						Display display = getWindowManager().getDefaultDisplay(); 
+						int width = display.getWidth();
+						int height = display.getHeight();
+						
+						CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+
+						map.animateCamera(cu);
 
 					} else {
 						otherPerson.setPosition(otherLocation);
@@ -136,14 +164,16 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 					md = new GMapV2Direction();
 
+					SupportMapFragment mapFrag = ((SupportMapFragment) getSupportFragmentManager()
+							.findFragmentById(R.id.map));
 
-					mMap = ((SupportMapFragment) getSupportFragmentManager()
-							.findFragmentById(R.id.map)).getMap();
-					
+					if(mapFrag != null) {
+						mMap = mapFrag.getMap();
+					}
+
 					if(last != null) {
 						last.remove();
 					}
-					
 					new accessDirectionsTask().execute(sourceLocation, oppLocation);
 
 
@@ -157,13 +187,6 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		});
 
 
-
-
-		// Move the camera instantly to currLocation with a zoom of 15.
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 15));
-
-		// Zoom in, animating the camera.
-		map.animateCamera(CameraUpdateFactory.zoomTo(15), 4000, null);
 	}
 
 	@Override
@@ -178,7 +201,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		roomNum = getIntent().getStringExtra("ROOMSTRING");
 		createOrJoin = getIntent().getIntExtra("CREATEORJOIN", 0);
 
-		setTitle("Room " + roomNum + ": 1 people");
+		setTitle("Room " + roomNum + ": 1 person");
 
 		a = new MyLocationListener(this, this, deviceID);
 
@@ -187,10 +210,15 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		a.showCurrentLocation(); 
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
 				.getMap();
-
-		LatLng currLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude()); 
-		location = map.addMarker(new MarkerOptions().position(currLocation)
-				.title("Current Location"));
+		if(a == null) {
+			Toast.makeText(this, "a is null", Toast.LENGTH_SHORT).show();
+		} else if (a.location == null) {
+			Toast.makeText(this, "a.location is null", Toast.LENGTH_SHORT).show();
+		} else {
+			LatLng currLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude()); 
+			location = map.addMarker(new MarkerOptions().position(currLocation)
+					.title("Current Location"));
+		}
 	}
 
 	@Override
@@ -216,6 +244,12 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		startActivity(intent);
 	}
 
+	public void moveToCurrLocation(View v) {
+		// Move the camera instantly to currLocation
+		LatLng currLocation = new LatLng(a.location.getLatitude(),a.location.getLongitude());
+		map.animateCamera(CameraUpdateFactory.newLatLng(currLocation));
+	}
+
 	private class accessDirectionsTask extends AsyncTask<LatLng, Void, Document> {
 
 		@Override
@@ -228,7 +262,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 		@Override
 		protected void onPostExecute(Document doc) {
 			if(doc != null) {
-		
+
 				ArrayList<LatLng> directionPoint = md.getDirection(doc);
 				PolylineOptions rectLine = new PolylineOptions().width(5).color(
 						Color.RED);
@@ -236,6 +270,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 				for (int i = 0; i < directionPoint.size(); i++) {
 					rectLine.add(directionPoint.get(i));
 				}
+
 				last = mMap.addPolyline(rectLine);
 			}
 		}
