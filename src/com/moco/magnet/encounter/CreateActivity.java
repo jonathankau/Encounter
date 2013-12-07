@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.ValueEventListener;
+import com.moco.magnet.encounter.JoinActivity.Devices;
 
 public class CreateActivity extends Activity {
 	private int randNum = 0;
@@ -54,7 +55,8 @@ public class CreateActivity extends Activity {
 					deviceID = Secure.getString(CreateActivity.this.getContentResolver(),
 							Secure.ANDROID_ID);
 
-					sessions.child(new_code).setValue(deviceID);
+					Devices dev = new Devices(deviceID);
+					sessions.child(new_code).setValue(dev);
 
 					// Update the actual textview with the new pin
 					TextView code = (TextView) CreateActivity.this.findViewById(R.id.new_pin);

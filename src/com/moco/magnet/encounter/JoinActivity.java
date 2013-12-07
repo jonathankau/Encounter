@@ -1,5 +1,8 @@
 package com.moco.magnet.encounter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -51,6 +54,33 @@ public class JoinActivity extends Activity {
 			return device_id2;
 		}
 	}
+	
+	public static class Devices {
+
+		private ArrayList<String> list = new ArrayList<String>();
+
+		private Devices() { }
+
+		public Devices(String s) {
+			list.add(s);
+		}
+
+		public ArrayList<String> getList() {
+			return list;
+		}
+		
+		public void addAllToList(Collection<String> c) {
+			list.addAll(c);
+		}
+		
+		public void addToList(String s) {
+			list.add(s);
+		}
+		
+		public void removeFromList(String s) {
+			list.remove(s);
+		}
+	}
 	/******************************************************************/
 
 	@Override
@@ -73,8 +103,6 @@ public class JoinActivity extends Activity {
 	    // Respond to the action bar's Up/Home button
 	    case android.R.id.home:
 	        NavUtils.navigateUpFromSameTask(this);
-	        sessions.child(join_code).removeValue();
-	        sessions.child(join_code).setValue(firstDeviceID);
 	        return true;
 	    }
 	    return super.onOptionsItemSelected(item);
@@ -109,11 +137,13 @@ public class JoinActivity extends Activity {
 						deviceID = Secure.getString(JoinActivity.this.getContentResolver(),
 								Secure.ANDROID_ID);
 
-						firstDeviceID = snapshot.child(join_code).getValue().toString();
+						Devices devices = ((Devices)snapshot.child(join_code).getValue());
+						firstDeviceID = devices.getList().get(0);
 
 						hasConfirmed = true;
 
-						sessions.child(join_code).setValue(new Message(firstDeviceID, deviceID));
+						devices.addToList(deviceID);
+						sessions.child(join_code).setValue(devices);
 						
 						Intent intent = new Intent(JoinActivity.this, MapActivity.class);
 						intent.putExtra("CREATEORJOIN", 1);
