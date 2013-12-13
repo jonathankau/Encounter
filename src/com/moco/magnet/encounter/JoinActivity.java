@@ -2,6 +2,7 @@ package com.moco.magnet.encounter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +29,7 @@ public class JoinActivity extends Activity {
 
 	private Firebase sessions = new Firebase(sessionsUrl);
 	private Firebase users = new Firebase(usersUrl);
-	
+
 	String join_code = "";
 	String firstDeviceID = "";
 	String deviceID = "";
@@ -54,7 +55,7 @@ public class JoinActivity extends Activity {
 			return device_id2;
 		}
 	}
-	
+
 	public static class Devices {
 
 		private ArrayList<String> list = new ArrayList<String>();
@@ -68,15 +69,15 @@ public class JoinActivity extends Activity {
 		public ArrayList<String> getList() {
 			return list;
 		}
-		
+
 		public void addAllToList(Collection<String> c) {
 			list.addAll(c);
 		}
-		
+
 		public void addToList(String s) {
 			list.add(s);
 		}
-		
+
 		public void removeFromList(String s) {
 			list.remove(s);
 		}
@@ -96,23 +97,23 @@ public class JoinActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    // Respond to the action bar's Up/Home button
-	    case android.R.id.home:
-	        NavUtils.navigateUpFromSameTask(this);
-	        return true;
-	    }
-	    return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		// Respond to the action bar's Up/Home button
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
-	
+
 	private boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager 
-	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+		ConnectivityManager connectivityManager 
+		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
 	}
 
 	public void joinRoom(View v) {
@@ -120,7 +121,7 @@ public class JoinActivity extends Activity {
 			Toast.makeText(this, "Network connection is not available.", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+
 		// Set listener
 		sessions.addValueEventListener(new ValueEventListener() {
 			boolean hasConfirmed = false;
@@ -137,19 +138,26 @@ public class JoinActivity extends Activity {
 						deviceID = Secure.getString(JoinActivity.this.getContentResolver(),
 								Secure.ANDROID_ID);
 
-						Devices devices = ((Devices)snapshot.child(join_code).getValue());
-						firstDeviceID = devices.getList().get(0);
+						if(snapshot.child(join_code) != null) {
+							HashMap<String, ArrayList<String>> deviceMap = ((HashMap)snapshot.child(join_code).getValue());
 
-						hasConfirmed = true;
+							if(deviceMap.get("list") != null) {
+								ArrayList<String> deviceList = deviceMap.get("list");
 
-						devices.addToList(deviceID);
-						sessions.child(join_code).setValue(devices);
-						
-						Intent intent = new Intent(JoinActivity.this, MapActivity.class);
-						intent.putExtra("CREATEORJOIN", 1);
-						intent.putExtra("ROOMSTRING", join_code);
-						intent.putExtra("DEVICEID", deviceID);
-						startActivity(intent);
+								Devices dev = new Devices(deviceID); // Create new devices object with this object id
+								dev.addAllToList(deviceList); // Add all the pre-existing devices back
+
+								hasConfirmed = true;
+
+								sessions.child(join_code).setValue(dev);
+
+								Intent intent = new Intent(JoinActivity.this, MapActivity.class);
+								intent.putExtra("CREATEORJOIN", 1);
+								intent.putExtra("ROOMSTRING", join_code);
+								intent.putExtra("DEVICEID", deviceID);
+								startActivity(intent);
+							}
+						}
 					}
 
 				}

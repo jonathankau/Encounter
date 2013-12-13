@@ -96,42 +96,12 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 		// Zoom in, animating the camera.
 		map.animateCamera(CameraUpdateFactory.zoomTo(15));
+		
+		// Set padding for map
+		map.setPadding(0, 0, 0, 40); // This is to allow us to move the zoom in buttons upward to change design
 
 
-
-		// Set session listener to get other device id
-		//		sessions.addChildEventListener(new ChildEventListener() { // This is not responding
-		//			@Override
-		//			public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-		//				sessionsSnapshot = snapshot;
-		//				updateFromSnapshots();
-		//			}
-		//			
-		//			@Override
-		//			public void onChildRemoved(DataSnapshot snapshot) {
-		//				sessionsSnapshot = snapshot;
-		//				updateFromSnapshots();
-		//			}
-		//			
-		//			@Override
-		//			public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-		//				sessionsSnapshot = snapshot;
-		//				updateFromSnapshots();
-		//			}
-		//			
-		//			@Override
-		//			public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-		//				sessionsSnapshot = snapshot;
-		//				updateFromSnapshots();
-		//			}
-		//
-		//			@Override
-		//			public void onCancelled() {
-		//				System.err.println("Listener was cancelled");
-		//			}
-		//		});
-
-		sessions.addValueEventListener(new ValueEventListener() { // This is not responding
+		sessions.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
 				sessionsSnapshot = snapshot;
@@ -263,7 +233,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 				// Change and update markers that still exist in this room
 				for(String otherID: otherDevices) {
-					if(otherID != null && usersSnapshot.child(otherID) != null) {
+					if(otherID != null && usersSnapshot.child(otherID) != null && usersSnapshot.child(otherID).getValue() != null) {
 
 						HashMap<String, String> coord = ((HashMap) usersSnapshot.child(otherID).getValue()); // Need if check or when otherID is invalid
 						coord.put("deviceID", otherID);
