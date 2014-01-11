@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
-        android:layout_marginBottom="15.5dp"
+        android:layout_marginBottom="25.5dp"
         android:layout_marginLeft="10dp"
         android:orientation="vertical" >
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
-        android:layout_marginBottom="54dp"
+        android:layout_marginBottom="64dp"
         android:layout_marginLeft="10dp"
         android:orientation="vertical" >
 

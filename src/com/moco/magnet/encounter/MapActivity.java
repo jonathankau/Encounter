@@ -82,7 +82,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	@Override
 	public void onStart() {
 		super.onStart();
-
+		
 
 		// Show your marker
 		a.showCurrentLocation(); 
@@ -191,9 +191,6 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 					otherDevices.remove(deviceID);
 					otherDevices.remove(null);
 
-					Toast.makeText(MapActivity.this, "Old: " + oldDevices.toString(), Toast.LENGTH_SHORT).show();
-					Toast.makeText(MapActivity.this, "Other: " + otherDevices.toString(), Toast.LENGTH_SHORT).show();
-
 					foundOtherID = true;
 				} else {
 					foundOtherID = false;
@@ -218,13 +215,11 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 				for(String oldID: oldDevices) {
 					if(mapMarkers.get(oldID) != null) {
 						mapMarkers.get(oldID).remove();
-						mapMarkers.remove(oldID);
-						Toast.makeText(MapActivity.this, "Marker has been removed!", Toast.LENGTH_SHORT).show();
+						mapMarkers.remove(oldID);						
 					}
 					if(mapLines.get(oldID) != null) {
 						mapLines.get(oldID).remove();
-						mapLines.remove(oldID);
-						Toast.makeText(MapActivity.this, "Path has ben removed!", Toast.LENGTH_SHORT).show();
+						mapLines.remove(oldID);						
 					}
 
 
@@ -260,7 +255,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 
 							LatLngBounds bounds = builder.build();
 
-							int padding = 350; // offset from edges of the map in pixels
+							int padding = 0; // offset from edges of the map in pixels
 
 							Display display = getWindowManager().getDefaultDisplay(); 
 							int width = display.getWidth();
@@ -307,6 +302,7 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 	}
 
 	public void leaveActivity() {
+		
 		if(otherDevices.size() > 0) {
 			// Make new device to update database with
 			Devices dev = new Devices(deviceID);
@@ -321,6 +317,8 @@ public class MapActivity extends FragmentActivity implements NotifyInterface {
 			sessions.child(roomNum).removeValue();
 		}
 		NavUtils.navigateUpFromSameTask(this);
+
+		overridePendingTransition(0, R.anim.push_left_out);
 	}
 
 	public void createChat(View v) {

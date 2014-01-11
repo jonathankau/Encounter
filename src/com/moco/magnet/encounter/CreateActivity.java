@@ -87,9 +87,16 @@ public class CreateActivity extends Activity {
 				sessions.child(new_code).removeValue();
 			}
 			NavUtils.navigateUpFromSameTask(this);
+			overridePendingTransition(0, R.anim.push_left_out);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(0, R.anim.push_left_out);
 	}
 
 	public void createRoom(View v) {
